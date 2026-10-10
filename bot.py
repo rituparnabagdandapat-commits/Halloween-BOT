@@ -132,25 +132,20 @@ async def event(interaction: discord.Interaction):
     embed.add_field(name="🕯️ Candles", value="1 Member = 1 Candle", inline=False)
     await interaction.response.send_message(embed=embed)
 
-@bot.tree.command(name="halloween-panel", description="Open Halloween Settings Panel")
+@bot.tree.command(name="halloween-panel", description="Show Halloween event panel")
 async def halloween_panel(interaction: discord.Interaction):
-    member_count = interaction.guild.member_count
-    candles = member_count # candles = members
-    total_candies = sum(candies.values())
-
+    await interaction.response.defer() # <- THIS FIXES IT
+    
     embed = discord.Embed(
-        title="🎃 WISTERIA HALLOWEEN SETTING",
-        description="```diff\n+ HALLOWEEN MODE: ENABLED\n+ VERSION: Spooky v2.0\n```\n**Welcome to the official Halloween control center!**\n\n> 🕸️ Manage everything from here\n> 🍂 Theme: **ORANGE NIGHT**",
-        color=0xFF6B00
+        title="🎃 Wisteria Halloween Event 🎃",
+        description="Welcome to the spooky season!",
+        color=discord.Color.orange()
     )
-    embed.add_field(name="🍬 System", value="> Candies: ON\n> Tricks: ON\n> Treats: ON", inline=True)
-    embed.add_field(name="🕯️ Candles = Members", value=f"> Members: {member_count}\n> Candles: {candles} 🕯️\n> Lit: {candles}/{candles}", inline=True)
-    embed.add_field(name="⚙️ Settings", value="> Mode: Spooky\n> Color: Orange\n> Role: Pumpkin", inline=True)
-    embed.add_field(name="📊 Live Stats", value=f"> Total Candies: {total_candies} 🍬\n> Total Players: {len(candies)}\n> Total Candles: {candles} 🕯️", inline=False)
-    embed.set_thumbnail(url="https://em-content.zobj.net/source/apple/391/jack-o-lantern_1f383.png")
-    embed.set_footer(text=f"Wisteria • {member_count} members = {candles} candles • Discord.gg/marvinsfolder", icon_url=interaction.guild.icon.url if interaction.guild and interaction.guild.icon else None)
-
-    view = HalloweenPanelView()
-    await interaction.response.send_message(embed=embed, view=view)
+    embed.add_field(name="🕯️ Candles", value=f"{interaction.guild.member_count} Members", inline=True)
+    embed.add_field(name="🍬 Trick or Treat", value="Click below!", inline=True)
+    
+    view = YourButtonView() # your buttons class
+    
+    await interaction.followup.send(embed=embed, view=view)
 
 bot.run(os.getenv("DISCORD_TOKEN"))
